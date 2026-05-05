@@ -1,26 +1,96 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+html { scroll-behavior: smooth; }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* ─── Keyframes ─── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes heartPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.35); }
+  100% { transform: scale(1); }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ─── Animation Classes ─── */
+.animate-fade-in-up { animation: fadeInUp 0.7s ease-out both; }
+.animate-fade-in { animation: fadeIn 0.5s ease-out both; }
+.animate-float { animation: float 4s ease-in-out infinite; }
+.animate-heart { animation: heartPop 0.4s ease-out; }
+.delay-1 { animation-delay: 0.08s; }
+.delay-2 { animation-delay: 0.16s; }
+.delay-3 { animation-delay: 0.24s; }
+.delay-4 { animation-delay: 0.32s; }
+.delay-5 { animation-delay: 0.4s; }
+.delay-6 { animation-delay: 0.48s; }
+.delay-7 { animation-delay: 0.56s; }
+.delay-8 { animation-delay: 0.64s; }
+
+/* ─── Scrollbar ─── */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ─── Recipe Card ─── */
+.recipe-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.recipe-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(126, 74, 38, 0.18);
+}
+.recipe-card .recipe-image {
+  transition: transform 0.5s ease;
+}
+.recipe-card:hover .recipe-image {
+  transform: scale(1.08);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Category Pill ─── */
+.category-pill {
+  transition: all 0.25s ease;
+}
+.category-pill:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(126, 74, 38, 0.15);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ─── Heart Button ─── */
+.heart-btn { transition: transform 0.2s ease; }
+.heart-btn:hover { transform: scale(1.2); }
+.heart-btn:active { transform: scale(0.9); }
+
+/* ─── Search Bar ─── */
+.search-box { transition: box-shadow 0.3s ease, border-color 0.3s ease; }
+.search-box:focus-within {
+  box-shadow: 0 0 0 3px rgba(200, 79, 3, 0.15), 0 8px 24px rgba(126, 74, 38, 0.12);
+  border-color: #c84f03;
+}
+
+/* ─── Section Title Underline ─── */
+.section-title { position: relative; display: inline-block; }
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 40px; height: 3px;
+  background: linear-gradient(90deg, #c84f03, #e8930f);
+  border-radius: 2px;
+}
+
+/* ─── Footer ─── */
+.footer-link { transition: color 0.2s ease, padding-left 0.2s ease; }
+.footer-link:hover { color: #f0a060; padding-left: 4px; }
+.newsletter-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(240, 160, 96, 0.4);
 }
