@@ -1,11 +1,7 @@
-import PlaceholderPage from "@/components/PlaceholderPage";
+import FavorilerClient from "./FavorilerClient";
 
-// Favori tarifler sayfası için geçici içerik alanı.
+export const metadata = { title: "Favorilerim — Tarifim", description: "Kaydettiğiniz favori tarifleri görüntüleyin." };
+
 export default function FavorilerPage() {
-  return (
-    <PlaceholderPage
-      title="Favori Tarifler"
-      description="En çok kaydedilen ve en çok beğenilen tarifleri burada listeleyeceğiz."
-    />
-  );
+  return <FavorilerClient />;
 }

@@ -1,11 +1,7 @@
-import PlaceholderPage from "@/components/PlaceholderPage";
+import SssClient from "./SssClient";
 
-// Sık sorulan sorular sayfası için geçici içerik alanı.
+export const metadata = { title: "SSS — Tarifim", description: "Sık sorulan sorular ve yanıtları." };
+
 export default function SssPage() {
-  return (
-    <PlaceholderPage
-      title="Sık Sorulan Sorular"
-      description="Üyelik, tarif paylaşımı ve hesap işlemleriyle ilgili sık sorulan sorular burada olacak."
-    />
-  );
+  return <SssClient />;
 }

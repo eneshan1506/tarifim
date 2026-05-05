@@ -1,11 +1,10 @@
-import PlaceholderPage from "@/components/PlaceholderPage";
+import KategorilerClient from "./KategorilerClient";
 
-// Kategoriler sayfası için geçici içerik alanı.
+export const metadata = {
+  title: "Kategoriler — Tarifim",
+  description: "Tüm yemek kategorilerini keşfedin. Ana yemek, çorba, tatlı, salata ve daha fazlası.",
+};
+
 export default function KategorilerPage() {
-  return (
-    <PlaceholderPage
-      title="Kategoriler"
-      description="Bu sayfada kategori kutuları, kategoriye göre tarif sayısı ve hızlı filtreleme alanı olacak."
-    />
-  );
+  return <KategorilerClient />;
 }

@@ -1,11 +1,7 @@
-import PlaceholderPage from "@/components/PlaceholderPage";
+import YeniEklenenlerClient from "./YeniEklenenlerClient";
 
-// Yeni eklenen tarifler sayfası için geçici içerik alanı.
+export const metadata = { title: "Yeni Eklenenler — Tarifim", description: "Son eklenen tarifleri keşfedin." };
+
 export default function YeniEklenenlerPage() {
-  return (
-    <PlaceholderPage
-      title="Yeni Eklenenler"
-      description="Sisteme son eklenen tarifler bu sayfada tarih sırasına göre gösterilecek."
-    />
-  );
+  return <YeniEklenenlerClient />;
 }

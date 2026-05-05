@@ -1,11 +1,7 @@
-import PlaceholderPage from "@/components/PlaceholderPage";
+import ProfilClient from "./ProfilClient";
 
-// Profil sayfası için geçici içerik alanı.
+export const metadata = { title: "Profilim — Tarifim", description: "Profilinizi görüntüleyin ve yönetin." };
+
 export default function ProfilPage() {
-  return (
-    <PlaceholderPage
-      title="Profilim"
-      description="Kullanıcı bilgileri, kaydedilen tarifler ve yorum geçmişi için profil ekranı burada olacak."
-    />
-  );
+  return <ProfilClient />;
 }

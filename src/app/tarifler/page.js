@@ -1,11 +1,15 @@
-import PlaceholderPage from "@/components/PlaceholderPage";
+import { Suspense } from "react";
+import TariflerClient from "./TariflerClient";
 
-// Tarifler sayfası için geçici içerik alanı.
+export const metadata = {
+  title: "Tarifler — Tarifim",
+  description: "Tüm tarifleri keşfedin. Filtreleme, sıralama ve kategoriye göre arama yapın.",
+};
+
 export default function TariflerPage() {
   return (
-    <PlaceholderPage
-      title="Tarifler"
-      description="Burada tüm tarifleri filtrelenebilir yapı ile listeleyeceğiz. Şimdilik sadece frontend sayfa iskeleti hazırlandı."
-    />
+    <Suspense>
+      <TariflerClient />
+    </Suspense>
   );
 }

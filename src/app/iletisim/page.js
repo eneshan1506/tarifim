@@ -1,11 +1,7 @@
-import PlaceholderPage from "@/components/PlaceholderPage";
+import IletisimClient from "./IletisimClient";
 
-// İletişim sayfası için geçici içerik alanı.
+export const metadata = { title: "İletişim — Tarifim", description: "Sorularınız ve önerileriniz için bize ulaşın." };
+
 export default function IletisimPage() {
-  return (
-    <PlaceholderPage
-      title="İletişim"
-      description="İletişim formu, sosyal medya bağlantıları ve destek bilgilerini bu sayfaya yerleştireceğiz."
-    />
-  );
+  return <IletisimClient />;
 }
