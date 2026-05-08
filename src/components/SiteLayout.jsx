@@ -9,7 +9,7 @@ export default function SiteLayout({ children }) {
       <Navbar />
 
       {/* Sayfaya özel içerikler bu alanda render edilir */}
-      <main className="grid w-full flex-1 gap-5 pt-28">
+      <main id="main-content" className="grid w-full flex-1 gap-5 pt-28">
         {children}
       </main>
 

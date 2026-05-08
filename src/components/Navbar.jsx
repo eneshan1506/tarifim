@@ -75,8 +75,18 @@ export default function Navbar() {
     setDesktopUserOpen(false);
   }, [pathname]);
 
+  const isActive = (href) => pathname === href || (href !== "/" && pathname.startsWith(href));
+
   return (
     <header className="fixed left-2 right-2 top-3 z-50 rounded-2xl border border-[#f1dac3] bg-white px-3 py-3 shadow-[0_12px_28px_rgba(126,74,38,0.12)] sm:left-3 sm:right-3">
+      {/* Skip-to-content (klavye/ekran okuyucu erişilebilirliği) */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-[#c84f03] focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"
+      >
+        İçeriğe atla
+      </a>
+
       <div className="flex items-center justify-between gap-3">
         {/* Sol tarafta marka logosu */}
         <Link href="/" className="font-[var(--font-display)] text-3xl font-extrabold text-[#953700]">
@@ -85,47 +95,65 @@ export default function Navbar() {
 
         {/* Desktop ana menü (hover ile açılan dropdown yapısı) */}
         <nav className="hidden flex-wrap items-center justify-center gap-3 lg:flex" aria-label="Ana menü">
-          {menuGroups.map((group) => (
-            <div
-              key={group.label}
-              className="relative"
-              onMouseEnter={() => {
-                setDesktopUserOpen(false);
-                setDesktopOpenGroup(group.label);
-              }}
-              onMouseLeave={() => setDesktopOpenGroup("")}
-            >
-              <button
-                type="button"
-                className="rounded-full border border-[#f1dac3] bg-[#fffdf8] px-3 py-1.5 text-sm font-semibold text-[#5f3d25]"
-              >
-                {group.label}
-              </button>
+          {menuGroups.map((group) => {
+            const isGroupActive = group.items.some((item) => isActive(item.href));
+            const isOpen = desktopOpenGroup === group.label;
+            return (
               <div
-                className={`absolute left-0 top-full min-w-[210px] overflow-hidden rounded-xl border border-[#f1dac3] bg-white shadow-[0_10px_24px_rgba(126,74,38,0.12)] ${
-                  desktopOpenGroup === group.label ? "visible opacity-100" : "invisible opacity-0"
-                }`}
+                key={group.label}
+                className="relative"
+                onMouseEnter={() => { setDesktopUserOpen(false); setDesktopOpenGroup(group.label); }}
+                onMouseLeave={() => setDesktopOpenGroup("")}
               >
-                {group.items.map((item) => (
-                  <Link
-                    key={item.href + item.label}
-                    href={item.href}
-                    onClick={() => {
-                      setDesktopOpenGroup("");
-                      setDesktopUserOpen(false);
-                    }}
-                    className="block border-b border-[#f7e5d5] px-3 py-2 text-sm text-[#5f3d25] last:border-b-0 hover:bg-[#fff5eb]"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+                <button
+                  type="button"
+                  aria-expanded={isOpen}
+                  aria-haspopup="true"
+                  className={`rounded-full border px-3 py-1.5 text-sm font-semibold transition-colors ${
+                    isGroupActive
+                      ? "border-[#c84f03] bg-[#fff5eb] text-[#c84f03]"
+                      : "border-[#f1dac3] bg-[#fffdf8] text-[#5f3d25] hover:border-[#c84f03]/40"
+                  }`}
+                >
+                  {group.label}
+                </button>
+                <div
+                  className={`absolute left-0 top-full mt-1 min-w-[210px] overflow-hidden rounded-xl border border-[#f1dac3] bg-white shadow-[0_10px_24px_rgba(126,74,38,0.12)] transition-all ${
+                    isOpen ? "visible opacity-100 translate-y-0" : "invisible opacity-0 -translate-y-1"
+                  }`}
+                >
+                  {group.items.map((item) => (
+                    <Link
+                      key={item.href + item.label}
+                      href={item.href}
+                      onClick={() => { setDesktopOpenGroup(""); setDesktopUserOpen(false); }}
+                      className={`block border-b border-[#f7e5d5] px-3 py-2 text-sm last:border-b-0 transition-colors ${
+                        isActive(item.href)
+                          ? "bg-[#fff5eb] font-semibold text-[#c84f03]"
+                          : "text-[#5f3d25] hover:bg-[#fff5eb]"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </nav>
 
-        {/* Desktop sağ aksiyon alanı: dil seçimi + üye menüsü */}
+        {/* Desktop sağ aksiyon alanı: Tarif Ekle + dil seçimi + üye menüsü */}
         <div className="hidden items-center gap-2 lg:flex">
+          {/* Tarif Ekle CTA */}
+          <Link
+            href="/tarif-ekle"
+            className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#c84f03] to-[#e8930f] px-4 py-2 text-sm font-bold text-white shadow-sm transition-transform hover:scale-105 active:scale-95"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+            </svg>
+            Tarif Ekle
+          </Link>
           <select
             aria-label="Dil seçimi"
             defaultValue="tr"
@@ -140,15 +168,14 @@ export default function Navbar() {
 
           <div
             className="relative"
-            onMouseEnter={() => {
-              setDesktopOpenGroup("");
-              setDesktopUserOpen(true);
-            }}
+            onMouseEnter={() => { setDesktopOpenGroup(""); setDesktopUserOpen(true); }}
             onMouseLeave={() => setDesktopUserOpen(false)}
           >
             <button
               type="button"
-              className="rounded-full border border-[#f1dac3] bg-[#fffdf8] px-4 py-2 text-sm font-bold text-[#7f3100]"
+              aria-expanded={desktopUserOpen}
+              aria-haspopup="true"
+              className="rounded-full border border-[#f1dac3] bg-[#fffdf8] px-4 py-2 text-sm font-bold text-[#7f3100] hover:border-[#c84f03]/40 transition-colors"
             >
               Üye
             </button>

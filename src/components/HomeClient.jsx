@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import SiteLayout from "@/components/SiteLayout";
 
 /* ─── Kategori verileri ─── */
@@ -97,9 +99,17 @@ const ClockIcon = () => (
 
 /* ─── Ana Sayfa Bileşeni ─── */
 export default function HomeClient() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [likedCards, setLikedCards] = useState(new Set());
   const [savedCards, setSavedCards] = useState(new Set());
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/tarifler?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   const toggleLike = (id) => {
     setLikedCards((prev) => {
@@ -141,19 +151,26 @@ export default function HomeClient() {
           </p>
 
           {/* Arama çubuğu */}
-          <div className="animate-fade-in-up delay-2 search-box mx-auto mt-8 flex items-center gap-3 rounded-full border border-[#f1dac3] bg-white/80 px-5 py-3 shadow-[0_4px_16px_rgba(126,74,38,0.08)] backdrop-blur-sm sm:max-w-lg">
+          <form
+            onSubmit={handleSearch}
+            className="animate-fade-in-up delay-2 search-box mx-auto mt-8 flex items-center gap-3 rounded-full border border-[#f1dac3] bg-white/80 px-5 py-3 shadow-[0_4px_16px_rgba(126,74,38,0.08)] backdrop-blur-sm sm:max-w-lg"
+          >
             <SearchIcon />
             <input
-              type="text"
+              type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Tarif ara... örn: mercimek çorbası"
               className="w-full bg-transparent text-sm text-[#2f2318] outline-none placeholder:text-[#b89a7c]"
+              aria-label="Tarif ara"
             />
-            <button className="shrink-0 rounded-full bg-gradient-to-r from-[#c84f03] to-[#e8930f] px-5 py-2 text-sm font-bold text-white shadow-md transition-transform hover:scale-105 active:scale-95">
+            <button
+              type="submit"
+              className="shrink-0 rounded-full bg-gradient-to-r from-[#c84f03] to-[#e8930f] px-5 py-2 text-sm font-bold text-white shadow-md transition-transform hover:scale-105 active:scale-95"
+            >
               Ara
             </button>
-          </div>
+          </form>
         </div>
 
         {/* Kategori hızlı erişim */}
@@ -213,11 +230,12 @@ export default function HomeClient() {
                 >
                   {/* Görsel alanı */}
                   <div className="relative h-[180px] overflow-hidden max-sm:h-[200px]">
-                    <img
-                      className="recipe-image block h-full w-full object-cover"
+                    <Image
+                      className="recipe-image object-cover"
                       src={card.image}
                       alt={card.name}
-                      loading="lazy"
+                      fill
+                      sizes="(max-width: 640px) 85vw, (max-width: 1024px) 50vw, 25vw"
                     />
                     {/* Gradient overlay */}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
@@ -236,10 +254,10 @@ export default function HomeClient() {
                       {card.time}
                     </span>
 
-                    {/* Kaydet butonu - sağ alt */}
+                    {/* Kaydet butonu - sağ alt (44px touch target) */}
                     <button
                       onClick={() => toggleSave(card.id)}
-                      className="heart-btn absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/30 backdrop-blur-sm"
+                      className="heart-btn absolute bottom-2 right-2 flex h-11 w-11 items-center justify-center rounded-full bg-black/30 backdrop-blur-sm"
                       aria-label="Kaydet"
                     >
                       <BookmarkIcon filled={isSaved} />

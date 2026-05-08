@@ -43,21 +43,32 @@ export default function GirisClient() {
           <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
             {mode === "register" && (
               <div>
-                <label className="mb-1 block text-xs font-semibold text-[#5f3d25]">Ad Soyad</label>
-                <input type="text" placeholder="Adınız Soyadınız" className="w-full rounded-xl border border-[#f1dac3] bg-[#fffdf8] px-4 py-2.5 text-sm text-[#2f2318] outline-none transition-all focus:border-[#c84f03] focus:ring-2 focus:ring-[#c84f03]/20 placeholder:text-[#b89a7c]" />
+                <label htmlFor="fullname" className="mb-1 block text-xs font-semibold text-[#5f3d25]">Ad Soyad</label>
+                <input id="fullname" type="text" placeholder="Adınız Soyadınız" autoComplete="name" className="w-full rounded-xl border border-[#f1dac3] bg-[#fffdf8] px-4 py-2.5 text-sm text-[#2f2318] outline-none transition-all focus:border-[#c84f03] focus:ring-2 focus:ring-[#c84f03]/20 placeholder:text-[#b89a7c]" />
               </div>
             )}
 
             <div>
-              <label className="mb-1 block text-xs font-semibold text-[#5f3d25]">E-posta</label>
-              <input type="email" placeholder="ornek@email.com" className="w-full rounded-xl border border-[#f1dac3] bg-[#fffdf8] px-4 py-2.5 text-sm text-[#2f2318] outline-none transition-all focus:border-[#c84f03] focus:ring-2 focus:ring-[#c84f03]/20 placeholder:text-[#b89a7c]" />
+              <label htmlFor="email" className="mb-1 block text-xs font-semibold text-[#5f3d25]">E-posta</label>
+              <input id="email" type="email" placeholder="ornek@email.com" autoComplete="email" className="w-full rounded-xl border border-[#f1dac3] bg-[#fffdf8] px-4 py-2.5 text-sm text-[#2f2318] outline-none transition-all focus:border-[#c84f03] focus:ring-2 focus:ring-[#c84f03]/20 placeholder:text-[#b89a7c]" />
             </div>
 
             <div>
-              <label className="mb-1 block text-xs font-semibold text-[#5f3d25]">Şifre</label>
+              <label htmlFor="password" className="mb-1 block text-xs font-semibold text-[#5f3d25]">Şifre</label>
               <div className="relative">
-                <input type={showPassword ? "text" : "password"} placeholder="••••••••" className="w-full rounded-xl border border-[#f1dac3] bg-[#fffdf8] px-4 py-2.5 pr-10 text-sm text-[#2f2318] outline-none transition-all focus:border-[#c84f03] focus:ring-2 focus:ring-[#c84f03]/20 placeholder:text-[#b89a7c]" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-[#b89a7c] hover:text-[#c84f03] transition-colors">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  autoComplete={mode === "login" ? "current-password" : "new-password"}
+                  className="w-full rounded-xl border border-[#f1dac3] bg-[#fffdf8] px-4 py-2.5 pr-10 text-sm text-[#2f2318] outline-none transition-all focus:border-[#c84f03] focus:ring-2 focus:ring-[#c84f03]/20 placeholder:text-[#b89a7c]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Şifreyi gizle" : "Şifreyi göster"}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-[#b89a7c] hover:text-[#c84f03] transition-colors"
+                >
                   {showPassword ? "🙈" : "👁️"}
                 </button>
               </div>
@@ -65,23 +76,23 @@ export default function GirisClient() {
 
             {mode === "register" && (
               <div>
-                <label className="mb-1 block text-xs font-semibold text-[#5f3d25]">Şifre Tekrar</label>
-                <input type="password" placeholder="••••••••" className="w-full rounded-xl border border-[#f1dac3] bg-[#fffdf8] px-4 py-2.5 text-sm text-[#2f2318] outline-none transition-all focus:border-[#c84f03] focus:ring-2 focus:ring-[#c84f03]/20 placeholder:text-[#b89a7c]" />
+                <label htmlFor="password-confirm" className="mb-1 block text-xs font-semibold text-[#5f3d25]">Şifre Tekrar</label>
+                <input id="password-confirm" type="password" placeholder="••••••••" autoComplete="new-password" className="w-full rounded-xl border border-[#f1dac3] bg-[#fffdf8] px-4 py-2.5 text-sm text-[#2f2318] outline-none transition-all focus:border-[#c84f03] focus:ring-2 focus:ring-[#c84f03]/20 placeholder:text-[#b89a7c]" />
               </div>
             )}
 
             {mode === "login" && (
               <div className="flex items-center justify-between text-xs">
-                <label className="flex items-center gap-2 text-[#5f3d25]">
-                  <input type="checkbox" className="rounded accent-[#c84f03]" /> Beni hatırla
+                <label htmlFor="remember" className="flex items-center gap-2 text-[#5f3d25] cursor-pointer">
+                  <input id="remember" type="checkbox" className="rounded accent-[#c84f03]" /> Beni hatırla
                 </label>
                 <button type="button" className="text-[#c84f03] hover:underline font-medium">Şifremi unuttum</button>
               </div>
             )}
 
             {mode === "register" && (
-              <label className="flex items-start gap-2 text-xs text-[#5f3d25]">
-                <input type="checkbox" className="mt-0.5 rounded accent-[#c84f03]" />
+              <label htmlFor="terms" className="flex items-start gap-2 text-xs text-[#5f3d25] cursor-pointer">
+                <input id="terms" type="checkbox" className="mt-0.5 rounded accent-[#c84f03]" />
                 <span><Link href="/kullanim-sartlari" className="text-[#c84f03] hover:underline">Kullanım şartlarını</Link> ve <Link href="/gizlilik" className="text-[#c84f03] hover:underline">gizlilik politikasını</Link> kabul ediyorum.</span>
               </label>
             )}
