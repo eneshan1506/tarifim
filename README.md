@@ -1,12 +1,13 @@
 # Tarif Dünyası (Next.js Demo)
 
-Bu proje, yemek tarifi platformu için UI odaklı demo sürümdür.
+Bu proje, yemek tarifi platformu için UI odaklı demo sürümdür. Artık temel bir sunucu taraflı kimlik doğrulama akışı da içerir.
 
 ## Özellikler
 
 - Navbar, tarif kartları ve footer içeren modern arayüz
-- Admin görünümü için demo akış
-- API route'larında Firebase'siz demo JSON yanıtları
+- Kayıt ol / giriş yap / çıkış yap akışı
+- `httpOnly` oturum çerezi ile korunan profil ve favoriler sayfaları
+- Yerel JSON tabanlı kullanıcı deposu
 
 ## Teknoloji
 
@@ -28,6 +29,12 @@ pnpm install
 pnpm dev
 ```
 
+3. Gerekirse ortam değişkenini tanımla:
+
+```bash
+cp .env.example .env.local
+```
+
 ## Not
 
-Bu sürümde Firebase entegrasyonu kaldırılmıştır. Sonraki adımda istediğin backend yapısını sıfırdan ekleyebiliriz.
+Kullanıcı kayıtları geliştirme amacıyla `src/data/auth/users.json` içinde tutulur. Gerçek ortamda bunu bir veritabanı adaptörü ile değiştirmeniz gerekir.

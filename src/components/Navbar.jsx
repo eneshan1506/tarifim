@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 // Navbar üstündeki dil seçenekleri (ileride i18n altyapısına bağlanabilir).
 const languageOptions = [
@@ -15,11 +15,8 @@ const languageOptions = [
 const menuGroups = [
   {
     label: "Anasayfa",
-    items: [
-      { href: "/", label: "Öne Çıkanlar" },
-      { href: "/favoriler", label: "Favori Tarifler" },
-      { href: "/yeni-eklenenler", label: "Yeni Eklenenler" },
-    ],
+    href: "/",
+    items: [],
   },
   {
     label: "Tarifler",
@@ -48,6 +45,7 @@ const menuGroups = [
 export default function Navbar() {
   // Route değişimlerini izlemek için pathname alınır.
   const pathname = usePathname();
+  const router = useRouter();
   // Mobil menünün açık/kapalı durumunu tutar.
   const [mobileOpen, setMobileOpen] = useState(false);
   // Mobil accordion içinde açık olan grup etiketi.
@@ -56,6 +54,8 @@ export default function Navbar() {
   const [desktopOpenGroup, setDesktopOpenGroup] = useState("");
   // Desktop'ta kullanıcı menüsünün açık/kapalı durumunu tutar.
   const [desktopUserOpen, setDesktopUserOpen] = useState(false);
+  const [authUser, setAuthUser] = useState(null);
+  const [isLoggingOut, startLogoutTransition] = useTransition();
 
   // Mobilde bir menü grubunu aç/kapat.
   const toggleGroup = (label) => {
@@ -69,16 +69,64 @@ export default function Navbar() {
 
   // Sayfa değiştiğinde tüm açık menüleri kapat (takılı kalma sorununu önler).
   useEffect(() => {
-    setMobileOpen(false);
-    setOpenGroup("");
-    setDesktopOpenGroup("");
-    setDesktopUserOpen(false);
+    const resetMenus = window.setTimeout(() => {
+      setMobileOpen(false);
+      setOpenGroup("");
+      setDesktopOpenGroup("");
+      setDesktopUserOpen(false);
+    }, 0);
+
+    return () => window.clearTimeout(resetMenus);
+  }, [pathname]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const syncAuthState = async () => {
+      const response = await fetch("/api/auth/me", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      const result = await response.json().catch(() => null);
+
+      if (!cancelled) {
+        setAuthUser(result?.user || null);
+      }
+    };
+
+    syncAuthState();
+
+    return () => {
+      cancelled = true;
+    };
   }, [pathname]);
 
   const isActive = (href) => pathname === href || (href !== "/" && pathname.startsWith(href));
+  const userInitial = authUser?.name?.charAt(0)?.toUpperCase() || "Ü";
+
+  const handleLogout = () => {
+    startLogoutTransition(async () => {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      setAuthUser(null);
+      router.push("/giris");
+      router.refresh();
+    });
+  };
 
   return (
-    <header className="fixed left-2 right-2 top-3 z-50 rounded-2xl border border-[#f1dac3] bg-white px-3 py-3 shadow-[0_12px_28px_rgba(126,74,38,0.12)] sm:left-3 sm:right-3">
+    <header className="fixed left-2 right-2 top-3 z-50 rounded-2xl bg-white/92 px-3 py-3 shadow-[0_18px_40px_rgba(126,74,38,0.14)] backdrop-blur sm:left-3 sm:right-3">
       {/* Skip-to-content (klavye/ekran okuyucu erişilebilirliği) */}
       <a
         href="#main-content"
@@ -96,6 +144,26 @@ export default function Navbar() {
         {/* Desktop ana menü (hover ile açılan dropdown yapısı) */}
         <nav className="hidden flex-wrap items-center justify-center gap-3 lg:flex" aria-label="Ana menü">
           {menuGroups.map((group) => {
+            if (group.href) {
+              return (
+                <Link
+                  key={group.label}
+                  href={group.href}
+                  onClick={() => {
+                    setDesktopOpenGroup("");
+                    setDesktopUserOpen(false);
+                  }}
+                  className={`rounded-full border px-3 py-1.5 text-sm font-semibold transition-colors ${
+                    isActive(group.href)
+                      ? "border-[#c84f03] bg-[#fff5eb] text-[#c84f03]"
+                      : "border-transparent bg-white/70 text-[#5f3d25] shadow-sm hover:bg-white"
+                  }`}
+                >
+                  {group.label}
+                </Link>
+              );
+            }
+
             const isGroupActive = group.items.some((item) => isActive(item.href));
             const isOpen = desktopOpenGroup === group.label;
             return (
@@ -112,13 +180,13 @@ export default function Navbar() {
                   className={`rounded-full border px-3 py-1.5 text-sm font-semibold transition-colors ${
                     isGroupActive
                       ? "border-[#c84f03] bg-[#fff5eb] text-[#c84f03]"
-                      : "border-[#f1dac3] bg-[#fffdf8] text-[#5f3d25] hover:border-[#c84f03]/40"
+                      : "border-transparent bg-white/70 text-[#5f3d25] shadow-sm hover:bg-white"
                   }`}
                 >
                   {group.label}
                 </button>
                 <div
-                  className={`absolute left-0 top-full mt-1 min-w-[210px] overflow-hidden rounded-xl border border-[#f1dac3] bg-white shadow-[0_10px_24px_rgba(126,74,38,0.12)] transition-all ${
+                  className={`absolute left-0 top-full mt-1 min-w-[210px] overflow-hidden rounded-xl bg-white shadow-[0_14px_30px_rgba(126,74,38,0.14)] ring-1 ring-black/5 transition-all ${
                     isOpen ? "visible opacity-100 translate-y-0" : "invisible opacity-0 -translate-y-1"
                   }`}
                 >
@@ -157,7 +225,7 @@ export default function Navbar() {
           <select
             aria-label="Dil seçimi"
             defaultValue="tr"
-            className="rounded-full border border-[#f1dac3] bg-white px-3 py-2 text-sm font-semibold text-[#5f3d25] outline-none"
+            className="rounded-full bg-white px-3 py-2 text-sm font-semibold text-[#5f3d25] shadow-sm outline-none ring-1 ring-[#f1dac3]/60"
           >
             {languageOptions.map((language) => (
               <option key={language.code} value={language.code}>
@@ -175,35 +243,67 @@ export default function Navbar() {
               type="button"
               aria-expanded={desktopUserOpen}
               aria-haspopup="true"
-              className="rounded-full border border-[#f1dac3] bg-[#fffdf8] px-4 py-2 text-sm font-bold text-[#7f3100] hover:border-[#c84f03]/40 transition-colors"
+              className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-[#7f3100] shadow-sm ring-1 ring-[#f1dac3]/55 transition-colors hover:bg-[#fffaf4]"
             >
-              Üye
+              {authUser ? (
+                <>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[#c84f03] to-[#e8930f] text-xs text-white">
+                    {userInitial}
+                  </span>
+                  <span>{authUser.name.split(" ")[0]}</span>
+                </>
+              ) : (
+                "Üye"
+              )}
             </button>
             <div
-              className={`absolute right-0 top-full min-w-[170px] overflow-hidden rounded-xl border border-[#f1dac3] bg-white shadow-[0_10px_24px_rgba(126,74,38,0.12)] ${
+              className={`absolute right-0 top-full min-w-[170px] overflow-hidden rounded-xl bg-white shadow-[0_14px_30px_rgba(126,74,38,0.14)] ring-1 ring-black/5 ${
                 desktopUserOpen ? "visible opacity-100" : "invisible opacity-0"
               }`}
             >
-              <Link
-                href="/giris"
-                onClick={() => {
-                  setDesktopOpenGroup("");
-                  setDesktopUserOpen(false);
-                }}
-                className="block border-b border-[#f7e5d5] px-3 py-2 text-sm hover:bg-[#fff5eb]"
-              >
-                Giriş Yap
-              </Link>
-              <Link
-                href="/profil"
-                onClick={() => {
-                  setDesktopOpenGroup("");
-                  setDesktopUserOpen(false);
-                }}
-                className="block px-3 py-2 text-sm hover:bg-[#fff5eb]"
-              >
-                Profilim
-              </Link>
+              {authUser ? (
+                <>
+                  <Link
+                    href="/profil"
+                    onClick={() => {
+                      setDesktopOpenGroup("");
+                      setDesktopUserOpen(false);
+                    }}
+                    className="block border-b border-[#f7e5d5] px-3 py-2 text-sm hover:bg-[#fff5eb]"
+                  >
+                    Profilim
+                  </Link>
+                  <Link
+                    href="/favoriler"
+                    onClick={() => {
+                      setDesktopOpenGroup("");
+                      setDesktopUserOpen(false);
+                    }}
+                    className="block border-b border-[#f7e5d5] px-3 py-2 text-sm hover:bg-[#fff5eb]"
+                  >
+                    Favorilerim
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    disabled={isLoggingOut}
+                    className="block w-full px-3 py-2 text-left text-sm hover:bg-[#fff5eb] disabled:cursor-not-allowed disabled:text-[#b89a7c]"
+                  >
+                    {isLoggingOut ? "Çıkış yapılıyor..." : "Çıkış Yap"}
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/giris"
+                  onClick={() => {
+                    setDesktopOpenGroup("");
+                    setDesktopUserOpen(false);
+                  }}
+                  className="block px-3 py-2 text-sm hover:bg-[#fff5eb]"
+                >
+                  Giriş Yap
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -213,7 +313,7 @@ export default function Navbar() {
           type="button"
           onClick={() => setMobileOpen((prev) => !prev)}
           aria-label="Menüyü aç/kapat"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#f1dac3] bg-[#fffdf8] text-[#7f3100] lg:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white text-[#7f3100] shadow-sm ring-1 ring-[#f1dac3]/60 lg:hidden"
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-2">
             {mobileOpen ? (
@@ -227,13 +327,26 @@ export default function Navbar() {
 
       {/* Mobil menü paneli: hamburger açılınca accordion olarak görünür */}
       {mobileOpen && (
-        <div className="mt-3 grid gap-3 border-t border-[#f7e5d5] pt-3 lg:hidden">
+        <div className="mt-3 grid gap-3 border-t border-[#f7e5d5]/70 pt-3 lg:hidden">
           {/* Mobil menü link grupları */}
           <nav className="grid gap-2" aria-label="Mobil ana menü">
             {menuGroups.map((group) => {
+              if (group.href) {
+                return (
+                  <Link
+                    key={group.label}
+                    href={group.href}
+                    onClick={closeMobileMenu}
+                    className="rounded-xl bg-[#fffdf8] px-3 py-2 text-sm font-semibold text-[#5f3d25] shadow-sm ring-1 ring-[#f1dac3]/55"
+                  >
+                    {group.label}
+                  </Link>
+                );
+              }
+
               const isOpen = openGroup === group.label;
               return (
-                <div key={group.label} className="overflow-hidden rounded-xl border border-[#f1dac3] bg-[#fffdf8]">
+                <div key={group.label} className="overflow-hidden rounded-xl bg-[#fffdf8] shadow-sm ring-1 ring-[#f1dac3]/55">
                   <button
                     type="button"
                     onClick={() => toggleGroup(group.label)}
@@ -243,7 +356,7 @@ export default function Navbar() {
                     <span>{isOpen ? "-" : "+"}</span>
                   </button>
                   {isOpen && (
-                    <div className="border-t border-[#f7e5d5] bg-white">
+                    <div className="border-t border-[#f7e5d5]/70 bg-white">
                       {group.items.map((item) => (
                         <Link
                           key={item.href + item.label}
@@ -266,7 +379,7 @@ export default function Navbar() {
             <select
               aria-label="Dil seçimi"
               defaultValue="tr"
-              className="rounded-xl border border-[#f1dac3] bg-white px-3 py-2 text-sm font-semibold text-[#5f3d25] outline-none"
+              className="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-[#5f3d25] shadow-sm outline-none ring-1 ring-[#f1dac3]/60"
             >
               {languageOptions.map((language) => (
                 <option key={language.code} value={language.code}>
@@ -275,14 +388,47 @@ export default function Navbar() {
               ))}
             </select>
 
-            <Link
-              href="/giris"
-              onClick={closeMobileMenu}
-              className="rounded-xl border border-[#f1dac3] bg-[#fffdf8] px-3 py-2 text-center text-sm font-bold text-[#7f3100]"
-            >
-              Üye Girişi
-            </Link>
+            {authUser ? (
+              <button
+                type="button"
+                onClick={() => {
+                  closeMobileMenu();
+                  handleLogout();
+                }}
+                disabled={isLoggingOut}
+                className="rounded-xl bg-[#fffdf8] px-3 py-2 text-center text-sm font-bold text-[#7f3100] shadow-sm ring-1 ring-[#f1dac3]/55 disabled:text-[#b89a7c]"
+              >
+                {isLoggingOut ? "Çıkılıyor..." : "Çıkış Yap"}
+              </button>
+            ) : (
+              <Link
+                href="/giris"
+                onClick={closeMobileMenu}
+                className="rounded-xl bg-[#fffdf8] px-3 py-2 text-center text-sm font-bold text-[#7f3100] shadow-sm ring-1 ring-[#f1dac3]/55"
+              >
+                Üye Girişi
+              </Link>
+            )}
           </div>
+
+          {authUser ? (
+            <div className="grid grid-cols-2 gap-2">
+              <Link
+                href="/profil"
+                onClick={closeMobileMenu}
+                className="rounded-xl bg-[#fff5eb] px-3 py-2 text-center text-sm font-semibold text-[#7f3100]"
+              >
+                Profilim
+              </Link>
+              <Link
+                href="/favoriler"
+                onClick={closeMobileMenu}
+                className="rounded-xl bg-[#fff5eb] px-3 py-2 text-center text-sm font-semibold text-[#7f3100]"
+              >
+                Favorilerim
+              </Link>
+            </div>
+          ) : null}
         </div>
       )}
     </header>

@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import SiteLayout from "@/components/SiteLayout";
-import { categories, recipes } from "@/data/mockData";
 
-export default function KategorilerClient() {
+export default function KategorilerClient({ categories }) {
   const [search, setSearch] = useState("");
 
   const filtered = categories.filter((c) =>
@@ -25,7 +24,7 @@ export default function KategorilerClient() {
 
         {/* Arama */}
         <div className="mt-6 mx-auto max-w-md animate-fade-in-up delay-2">
-          <div className="search-box flex items-center gap-2 rounded-full border border-[#f1dac3] bg-white px-4 py-2.5 shadow-sm">
+          <div className="search-box flex items-center gap-2 rounded-full bg-white px-4 py-2.5 shadow-[0_10px_24px_rgba(126,74,38,0.08)] ring-1 ring-[#f1dac3]/55">
             <svg className="h-5 w-5 text-[#c84f03]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
             </svg>
@@ -43,12 +42,11 @@ export default function KategorilerClient() {
       {/* Kategori grid */}
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filtered.map((cat, i) => {
-          const recipeCount = recipes.filter((r) => r.category === cat.slug).length;
           return (
             <Link
               key={cat.slug}
               href={`/tarifler?kategori=${cat.slug}`}
-              className="group relative overflow-hidden rounded-2xl border border-[#f1dac3] bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg animate-fade-in-up"
+              className="group relative overflow-hidden rounded-2xl bg-white p-6 shadow-[0_12px_28px_rgba(126,74,38,0.08)] ring-1 ring-[#f6eadc]/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_36px_rgba(126,74,38,0.12)] animate-fade-in-up"
               style={{ animationDelay: `${i * 60}ms` }}
             >
               {/* Dekoratif arka plan blob */}
@@ -93,7 +91,7 @@ export default function KategorilerClient() {
       {filtered.length === 0 && (
         <div className="mt-12 text-center">
           <p className="text-6xl mb-4">🔍</p>
-          <p className="text-lg text-[#7f6248]">"{search}" ile eşleşen kategori bulunamadı.</p>
+          <p className="text-lg text-[#7f6248]">&quot;{search}&quot; ile eşleşen kategori bulunamadı.</p>
         </div>
       )}
     </SiteLayout>

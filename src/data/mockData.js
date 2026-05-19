@@ -114,7 +114,7 @@ export const faqItems = [
   { q: "Nasıl üye olurum?",                             a: "Ana sayfadaki 'Üye' butonuna tıklayarak veya giriş sayfasından 'Kayıt Ol' seçeneğiyle hızlıca üye olabilirsiniz. E-posta veya Google hesabınızla kayıt olabilirsiniz." },
   { q: "Tarif paylaşmak için ne yapmalıyım?",           a: "Üye girişi yaptıktan sonra sağ üstteki '+' butonuna veya profil menüsündeki 'Tarif Ekle' seçeneğine tıklayarak tarif paylaşabilirsiniz." },
   { q: "Tariflerimi düzenleyebilir miyim?",             a: "Evet, profilinizden paylaştığınız tariflere giderek 'Düzenle' butonuyla istediğiniz zaman güncelleyebilirsiniz." },
-  { q: "Favorilere nasıl eklerim?",                     a: "Tarif kartlarındaki bookmark (🔖) ikonuna tıklayarak tarifi favorilerinize kaydedebilirsiniz. Favorilerinize 'Favoriler' sayfasından ulaşabilirsiniz." },
+  { q: "Favorilere nasıl eklerim?",                     a: "Tarif kartlarindaki favori butonuna tiklayarak tarifi favorilerinize ekleyebilirsiniz. Favorilerinize 'Favoriler' sayfasindan ulasabilirsiniz." },
   { q: "Yorum yapmak için üye olmam gerekiyor mu?",     a: "Evet, yorum yapabilmek ve tarifleri beğenebilmek için üye girişi yapmanız gerekmektedir." },
   { q: "Tarif görselleri için önerilen boyut nedir?",   a: "En iyi görünüm için 1200x800 piksel, yatay formatta ve yüksek çözünürlüklü görseller öneriyoruz." },
   { q: "Hesabımı nasıl silebilirim?",                   a: "Profil ayarlarından 'Hesabı Sil' seçeneğini kullanabilirsiniz. Bu işlem geri alınamaz, tüm tarifleriniz ve yorumlarınız kalıcı olarak silinir." },

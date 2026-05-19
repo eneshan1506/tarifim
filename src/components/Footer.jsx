@@ -89,7 +89,7 @@ export default function Footer() {
             Tarifim
           </Link>
           <p className="text-sm leading-relaxed text-[#b89a7c]">
-            Türkiye'nin en lezzetli tarif platformu. Binlerce tarif keşfet, kendi tariflerini paylaş ve mutfakta yeni maceralar yaşa!
+            T&#252;rkiye&#39;nin en lezzetli tarif platformu. Binlerce tarif keşfet, kendi tariflerini paylaş ve mutfakta yeni maceralar yaşa!
           </p>
           {/* Sosyal medya */}
           <div className="flex items-center gap-3 pt-1">
@@ -98,7 +98,7 @@ export default function Footer() {
                 key={s.label}
                 href={s.href}
                 aria-label={s.label}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#4a3828] text-[#b89a7c] transition-all duration-200 hover:border-[#f0a060] hover:bg-[#f0a060]/10 hover:text-[#f0a060]"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3a2c20] text-[#b89a7c] transition-all duration-200 hover:bg-[#4a3727] hover:text-[#f0a060]"
               >
                 {s.icon}
               </a>
@@ -153,7 +153,7 @@ export default function Footer() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="E-posta adresiniz"
               required
-              className="newsletter-input w-full rounded-lg border border-[#4a3828] bg-[#3d2e20] px-4 py-2.5 text-sm text-white placeholder:text-[#8a7060] transition-colors focus:border-[#f0a060]"
+              className="newsletter-input w-full rounded-lg bg-[#3d2e20] px-4 py-2.5 text-sm text-white placeholder:text-[#8a7060] transition-colors ring-1 ring-[#4a3828] focus:ring-[#f0a060]"
             />
             <button
               type="submit"
